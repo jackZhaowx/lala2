@@ -22,7 +22,7 @@ public class UserController {
     }
 
 
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAuthority('ROLE_DEV')")
     @RequestMapping("/api/test1")
     public String test1() {
         return "test1";
