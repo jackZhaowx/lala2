@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.grp.mybatis.SysUserRoleMapper">
+    <resultMap id="SysUserRoleMap" type="SysUserRole">
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <collection property="role_ids" ofType="java.lang.String">
+            <result column="role_id" property="role_id" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+    <select id="getEntityByUsername" resultMap="SysUserRoleMap">
+       select a.role_id,a.username,b.password
+       from sys_user_role a,sys_user b
+       where a.username=#{username,jdbcType=VARCHAR} and a.username=b.username
+    </select>
+</mapper>
