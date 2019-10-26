@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.web.cors.CorsUtils;
 
 @Configuration
 @EnableWebSecurity
@@ -26,15 +27,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http.cors().and().csrf().disable().authorizeRequests()
+                //处理跨域请求中的Preflight请求
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers("/api/notneedlogin/**").permitAll()
-                .and()
-                .authorizeRequests()
                 .antMatchers("/api/**").authenticated()
                 .and()
-                .formLogin().loginProcessingUrl("/login").permitAll()
-                .and()
-                .csrf().disable()
+                .formLogin().loginPage("https://www.baidu.com").permitAll().and()
                 .addFilter(new JWTLoginFilter(authenticationManager()))
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()));
     }

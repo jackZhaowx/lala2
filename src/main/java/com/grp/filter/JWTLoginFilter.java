@@ -5,6 +5,7 @@ package com.grp.filter;
  */
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,11 +14,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 import com.grp.mybatis.entity.LaLaResult;
+import com.grp.util.IOReader;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,12 +48,18 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
         try {
+            String json = IOReader.ReadAsChars(request);
+            String username = "";
+            String password = "";
+            Map<String, String> user_login = new Gson().fromJson(json, Map.class);
+            if (user_login != null) {
+                username = user_login.get("username");
+                password = user_login.get("password");
+            }
             Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>()));
             return authenticate;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new InternalAuthenticationServiceException(e.getMessage());
         }
     }
@@ -71,7 +80,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         result.setCode("0");
         result.setMessage("登录成功！");
         Map<String, String> data = new HashMap<>();
-        data.put("data", token);
+        data.put("token", token);
         result.setData(data);
         String str = new Gson().toJson(result);
         outContent(response, str);
