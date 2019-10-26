@@ -41,8 +41,9 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
             if (user.getPassword().equals(md5)) {
                 return new UsernamePasswordAuthenticationToken(username, null, user.getAuthorities());
             }
+            throw new RuntimeException("密码错误！");
         }
-        return null;
+        throw new RuntimeException("用户不存在！");
     }
 
     @Override
