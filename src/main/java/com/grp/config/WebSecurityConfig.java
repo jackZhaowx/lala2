@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/notneedlogin/**").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .and()
-                .formLogin().loginPage("https://www.baidu.com").permitAll().and()
+                .formLogin().loginPage("http://192.168.11.229/").permitAll().and()
                 .addFilter(new JWTLoginFilter(authenticationManager()))
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()));
     }
